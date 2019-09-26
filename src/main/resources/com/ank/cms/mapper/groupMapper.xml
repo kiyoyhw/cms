@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ank.cms.dao.groupMapper">
+
+    <select id="selAllGroups" resultType="Group">
+           select * from admin_group
+	</select>
+
+    <resultMap id="groupPermission" type="com.ank.cms.model.Group">
+        <id column="agi" property="id"></id>
+        <result column="agg" property="gname"></result>
+        <result column="agd" property="description"></result>
+        <result column="agc" property="create_time"></result>
+        <result column="aga" property="author"></result>
+        <collection property="permissions" javaType="java.util.ArrayList" ofType="com.ank.cms.model.Permission">
+            <id column="api" property="id"></id>
+            <result column="app" property="pname"></result>
+            <result column="apd" property="description"></result>
+            <result column="agpp" property="pState"></result>
+        </collection>
+    </resultMap>
+
+    <select id="selGroupPermissionsByGID" resultMap="groupPermission">
+		select distinct ag.id agi,ag.description agd ,ag.gname agg,ag.create_time agc,ag.author aga,agp.permissiontype agpp,ap.id api,ap.pname app,ap.description apd from admin_group ag
+		inner join admin_group_permission agp
+		on ag.id=agp.group_id
+		inner join admin_permission ap
+		on agp.permission_id=ap.id where ag.id=#{id}
+	</select>
+</mapper>
